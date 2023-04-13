@@ -1,19 +1,29 @@
 package entries
 
 import io.javalin.http.Context
+import io.javalin.http.bodyAsClass
+import jdbi
+
+data class CreateEntryCommand(val title: String, val text: String)
 
 object SaveEntryCommand {
-
-    // return value
     fun saveNewEntryHandler(ctx: Context){
-        saveNewEntry(
-            0,
-            ctx.formParam("title")!!,
-            ctx.formParam("text")!!
-        )
+        val createEntryData: CreateEntryCommand = ctx.bodyAsClass()
+
+        saveNewEntry(createEntryData)
     }
 
-    private fun saveNewEntry(userId: Long, title: String, text: String){
-        println("Saving new entry for user $userId with title $title and text $text")
+    private fun saveNewEntry(createEntryCommand: CreateEntryCommand){
+        jdbi.useHandle<Exception> { handle ->
+            handle.createUpdate(
+                "INSERT INTO entry (title, text) VALUES (:title, :text)"
+            )
+                .bind("title", createEntryCommand.title)
+                .bind("text", createEntryCommand.text)
+                .execute()
+        }
+
+        println("TEST")
+        println("Saving new entry for user $createEntryCommand")
     }
 }

@@ -1,6 +1,9 @@
 plugins {
     kotlin("jvm") version "1.8.20"
     application
+
+    id("org.flywaydb.flyway") version "9.8.1"
+
 }
 
 group = "org.example"
@@ -12,9 +15,21 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("io.javalin:javalin:5.4.2")
-    implementation("org.slf4j:slf4j-simple:2.0.6")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+
+    //Javalin dependencies
+    // https://mvnrepository.com/artifact/io.javalin/javalin-bundle
+    implementation("io.javalin:javalin-bundle:5.4.2")
+
+
+    //jdbi dependencies
+    implementation(platform("org.jdbi:jdbi3-bom:3.37.1")) //if I in the future have more than one jdbi dependency, I can use this to manage the versions (only here the version needs to be specified)
+    //implementation("org.jdbi:jdbi3-core:3.38.0-rc2-SNAPSHOT") <-- version does not need to be specified
+    implementation("org.jdbi:jdbi3-core")
+    implementation("org.jdbi:jdbi3-kotlin:3.37.1")
+
+    //flyway dependencies
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation("org.postgresql:postgresql:42.6.0") //the driver is needed to communicate with the database
 }
 
 tasks.test {
@@ -22,9 +37,17 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(11)
 }
 
 application {
     mainClass.set("MainKt")
+}
+
+flyway {
+    //TODO TGIS, probably use "System.getenv"
+    url = "jdbc:postgresql://localhost:5433/postgres"
+    user = "postgres"
+    password = "Hallo123_"
+    schemas = arrayOf("public")
 }
