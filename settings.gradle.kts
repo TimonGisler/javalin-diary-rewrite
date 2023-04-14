@@ -5,5 +5,5 @@ pluginManagement {
     }
     
 }
-rootProject.name = "untitled"
+rootProject.name = "javalin-diary-rewrite"
 

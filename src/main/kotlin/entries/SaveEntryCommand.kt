@@ -14,6 +14,7 @@ object SaveEntryCommand {
     }
 
     private fun saveNewEntry(createEntryCommand: CreateEntryCommand){
+
         jdbi.useHandle<Exception> { handle ->
             handle.createUpdate(
                 "INSERT INTO entry (title, text) VALUES (:title, :text)"
@@ -22,8 +23,5 @@ object SaveEntryCommand {
                 .bind("text", createEntryCommand.text)
                 .execute()
         }
-
-        println("TEST")
-        println("Saving new entry for user $createEntryCommand")
     }
 }
