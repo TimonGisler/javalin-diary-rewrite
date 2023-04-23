@@ -35,7 +35,6 @@ dependencies {
     implementation("org.flywaydb:flyway-core:9.16.3") //used in order to use flyway in my code
 
     //Test container dependency --> (https://www.testcontainers.org/quickstart/junit_5_quickstart/)
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1") //TODO TGIS, maybe i can remove this (jdbi might already include that one
     testImplementation("org.testcontainers:testcontainers:1.18.0")
     testImplementation("org.testcontainers:junit-jupiter:1.18.0")
     testImplementation("org.testcontainers:postgresql:1.18.0")
