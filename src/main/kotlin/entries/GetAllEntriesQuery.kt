@@ -1,22 +1,22 @@
 package entries
 
+import JdbiProvider.jdbi
 import io.javalin.http.Context
-import jdbi
+
+// return value
+data class EntryQueryResponse(val title: String, val text: String)
 
 object GetAllEntriesQuery {
 
-    // return value
-    data class Entry(val text: String, val title: String)
     fun getAllEntriesHandler(ctx: Context){
-        println("Moin")
         val entries = fetchAllEntries()
         ctx.json(entries)
     }
 
-    private fun fetchAllEntries(): List<Entry> {
-        return jdbi.withHandle<List<Entry>, Exception> {
+    private fun fetchAllEntries(): List<EntryQueryResponse> {
+        return jdbi.withHandle<List<EntryQueryResponse>, Exception> {
             it.createQuery("SELECT * FROM entry")
-                .mapTo(Entry::class.java)
+                .mapTo(EntryQueryResponse::class.java)
                 .list()
 
         }

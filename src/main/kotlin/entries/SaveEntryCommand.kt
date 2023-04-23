@@ -1,8 +1,8 @@
 package entries
 
+import JdbiProvider.jdbi
 import io.javalin.http.Context
 import io.javalin.http.bodyAsClass
-import jdbi
 
 data class CreateEntryCommand(val title: String, val text: String)
 
