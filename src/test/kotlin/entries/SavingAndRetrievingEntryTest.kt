@@ -13,6 +13,13 @@ import kotlin.test.assertEquals
 class SavingAndRetrievingEntryTest: PostgresContainerBaseTest(){
 
     @Test
+    fun `not logged in user cannot save anything`(){
+        //TODO TGIS
+        //potential resources:
+        //https://javalin.io/tutorials/auth-example <-- official tutorial
+    }
+
+    @Test
     fun `after saving a entry user should also be able to retrieve it`(){
         val entryTitle = "title"
         val entryText = "text"
