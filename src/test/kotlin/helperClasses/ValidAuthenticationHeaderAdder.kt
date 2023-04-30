@@ -7,7 +7,7 @@ import java.util.function.Consumer
 /**
  * Can be passed to the JavalinTest.test() method to add the authentication header to the request.
  */
-class AuthenticationHeaderAdder: Consumer<Request.Builder>{
+class ValidAuthenticationHeaderAdder: Consumer<Request.Builder>{
     private val encodedCredentials: String = Base64.getEncoder().encodeToString("$testUserMail:$testUserPassword".toByteArray())
 
     override fun accept(builder: Request.Builder) {

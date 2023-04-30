@@ -34,9 +34,9 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         val expectedEntryResponse: String = JavalinJackson().toJsonString(listOf(EntryQueryResponse(entryTitle, entryText)))
 
         JavalinTest.test(getJavalinApp()) { _, client ->
-            client.post("/entries", entryToSave, AuthenticationHeaderAdder())
+            client.post("/entries", entryToSave, ValidAuthenticationHeaderAdder())
 
-            val response: String? = client.get("/entries", AuthenticationHeaderAdder()).body?.string()
+            val response: String? = client.get("/entries", ValidAuthenticationHeaderAdder()).body?.string()
 
             assertEquals(expectedEntryResponse, response)
         }
@@ -52,9 +52,9 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         val expectedEntryResponse = JavalinJackson().toJsonString(listOf(EntryQueryResponse(entryTitle, entryText)))
 
         JavalinTest.test(getJavalinApp())  { _, client ->
-            client.post("/entries", entryToSave, AuthenticationHeaderAdder())
+            client.post("/entries", entryToSave, ValidAuthenticationHeaderAdder())
 
-            val response: String? = client.get("/entries", AuthenticationHeaderAdder()).body?.string()
+            val response: String? = client.get("/entries", ValidAuthenticationHeaderAdder()).body?.string()
 
             assertEquals(expectedEntryResponse, response)
         }
