@@ -21,6 +21,7 @@ abstract class PostgresContainerBaseTest {
         .withDatabaseName("testDbName")
         .withUsername("testUserName")
         .withPassword("testPw")
+//TODO TGIS create an implementation which does not always create a new container but uses the same one for all tests
 
     @BeforeEach
     fun setupDb() {
@@ -28,6 +29,7 @@ abstract class PostgresContainerBaseTest {
         val username = postgresContainer.username
         val password = postgresContainer.password
 
+        // migrate db so that it is identical to my production db
         Flyway.configure()
             .dataSource(jdbcUrl, username, password)
             .loggers("slf4j")

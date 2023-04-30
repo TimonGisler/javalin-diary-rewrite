@@ -55,7 +55,7 @@ application {
 
 flyway {
     //TODO TGIS, probably use "System.getenv"
-    url = "jdbc:postgresql://localhost:5433/       "
+    url = "jdbc:postgresql://localhost:5433/postgres"
     user = "postgres"
     password = "Hallo123_"
     schemas = arrayOf("public")

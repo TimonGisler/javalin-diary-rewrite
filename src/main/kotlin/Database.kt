@@ -14,7 +14,6 @@ object JdbiProvider{
     /**
      * This function is used to set up the jdbi instance for testing
      * It replaces the [customJdbi] with a new base instance which accesses the testing database
-     * THIS METHOD NEEDS TO BE CALLED BEFORE ACCESSING [jdbi] OTHERWISE IT WON'T HAVE ANY EFFECT
      */
     fun setupTestingJdbi(dbUrl: String, dbUser: String, dbPassword: String){
         customJdbi = Jdbi.create(dbUrl, dbUser, dbPassword)
@@ -26,9 +25,8 @@ object JdbiProvider{
      */
     private var customJdbi: Jdbi? = null
 
-    val jdbi: Jdbi by lazy {
-        println("creating jdbi instance")
-        (customJdbi ?: Jdbi.create(dbUrl, dbUser, dbPassword))
+    fun getJdbi(): Jdbi {
+        return (customJdbi ?: Jdbi.create(dbUrl, dbUser, dbPassword))
             .installPlugin(KotlinPlugin())
             .setSqlLogger(CustomSqlLogger())
     }

@@ -1,6 +1,6 @@
 package entries
 
-import JdbiProvider.jdbi
+import JdbiProvider.getJdbi
 import io.javalin.http.Context
 
 // return value
@@ -14,7 +14,7 @@ object GetAllEntriesQuery {
     }
 
     private fun fetchAllEntries(): List<EntryQueryResponse> {
-        return jdbi.withHandle<List<EntryQueryResponse>, Exception> {
+        return getJdbi().withHandle<List<EntryQueryResponse>, Exception> {
             it.createQuery("SELECT * FROM entry")
                 .mapTo(EntryQueryResponse::class.java)
                 .list()
