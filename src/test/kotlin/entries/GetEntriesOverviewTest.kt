@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 class GetEntriesOverviewTest: PostgresContainerBaseTest() {
 
     @Test
-    fun `should return only the title and date NOT TEXT to save bandwidth`(){
+    fun `overview only returns entries of this user`(){
         //TODO TGIS
     }
 
