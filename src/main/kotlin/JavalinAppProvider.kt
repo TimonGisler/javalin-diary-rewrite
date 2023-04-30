@@ -1,4 +1,4 @@
-import entries.GetAllEntriesQuery
+import entries.GetEntriesOverViewQuery
 import entries.SaveEntryCommand
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
@@ -13,7 +13,7 @@ fun getJavalinApp(): Javalin {
     return Javalin.create { config ->
         config.accessManager(AccessManager())}
         .routes {
-            get("/entries", GetAllEntriesQuery::getAllEntriesHandler, Roles.CREATOR)
+            get("/entries", GetEntriesOverViewQuery::getEntriesOverviewHandler, Roles.CREATOR)
             post("/entries", SaveEntryCommand::saveNewEntryHandler, Roles.EVERYONE) //TODO TGIS, change to only logged in users
         }
 }

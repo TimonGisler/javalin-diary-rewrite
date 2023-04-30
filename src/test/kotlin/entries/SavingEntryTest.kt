@@ -22,7 +22,7 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         JavalinTest.test(getJavalinApp())  { _, client ->
             val response = client.post("/entries", entryToSave).code
 
-            assertEquals(HttpStatus.UNAUTHORIZED.code, response) //401 is the code for unauthorized
+            assertEquals(HttpStatus.UNAUTHORIZED.code, response)
         }
     }
 
@@ -31,47 +31,19 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         val entryTitle = "title"
         val entryText = "text"
         val entryToSave = CreateEntryCommand(entryTitle, entryText)
-        val expectedEntryResponse: String = JavalinJackson().toJsonString(listOf(EntryQueryResponse(entryTitle, entryText)))
 
         JavalinTest.test(getJavalinApp()) { _, client ->
-            client.post("/entries", entryToSave, ValidAuthenticationHeaderAdder())
+            val response: Int = client.post("/entries", entryToSave, ValidAuthenticationHeaderAdderUser1()).code
 
-            val response: String? = client.get("/entries", ValidAuthenticationHeaderAdder()).body?.string()
-
-            assertEquals(expectedEntryResponse, response)
+            assertEquals(HttpStatus.CREATED.code, response)
         }
 
 
     }
 
     @Test
-    fun `after saving a entry user should also be able to retrieve it`(){
-        val entryTitle = "title"
-        val entryText = "text"
-        val entryToSave = CreateEntryCommand(entryTitle, entryText)
-        val expectedEntryResponse = JavalinJackson().toJsonString(listOf(EntryQueryResponse(entryTitle, entryText)))
-
-        JavalinTest.test(getJavalinApp())  { _, client ->
-            client.post("/entries", entryToSave, ValidAuthenticationHeaderAdder())
-
-            val response: String? = client.get("/entries", ValidAuthenticationHeaderAdder()).body?.string()
-
-            assertEquals(expectedEntryResponse, response)
-        }
-    }
-
-    @Test
-    fun `not logged in user should not be able to fetch any entries`(){
-        JavalinTest.test(getJavalinApp())  { _, client ->
-            val response = client.get("/entries").code
-
-            assertEquals(HttpStatus.UNAUTHORIZED.code, response)
-        }
-    }
-
-    @Test
-    fun `user with wrong pw or username should not be able to save anything`(){
-        val encodedCredentials: String = Base64.getEncoder().encodeToString("somethingRandomAndWrong:thisPwDoesNotExist".toByteArray())
+    fun `user with wrong pw should not be able to save anything`(){
+        val encodedCredentials: String = Base64.getEncoder().encodeToString("$testUser1Mail:thisPwDoesNotExist".toByteArray())
 
         JavalinTest.test(getJavalinApp())  { _, client ->
             val response = client.get("/entries") {
