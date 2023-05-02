@@ -1,4 +1,4 @@
-package helperClasses
+package commonFunctionality
 
 import org.flywaydb.core.Flyway
 import org.junit.jupiter.api.BeforeEach

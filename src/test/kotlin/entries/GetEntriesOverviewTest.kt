@@ -1,17 +1,13 @@
 package entries
 
 import getJavalinApp
-import helperClasses.PostgresContainerBaseTest
-import helperClasses.ValidAuthenticationHeaderAdderUser1
-import helperClasses.ValidAuthenticationHeaderAdderUser2
-import helperClasses.parseBodyToObject
+import commonFunctionality.PostgresContainerBaseTest
+import commonFunctionality.ValidAuthenticationHeaderAdderUser1
+import commonFunctionality.ValidAuthenticationHeaderAdderUser2
+import commonFunctionality.parseBodyToObject
 import io.javalin.http.HttpStatus
-import io.javalin.json.JavalinJackson
-import io.javalin.json.fromJsonString
-import io.javalin.json.jsonMapper
-import io.javalin.json.toJsonString
 import io.javalin.testtools.JavalinTest
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GetEntriesOverviewTest: PostgresContainerBaseTest() {

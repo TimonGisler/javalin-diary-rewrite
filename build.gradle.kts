@@ -36,7 +36,7 @@ dependencies {
 
     //Test container dependency --> (https://www.testcontainers.org/quickstart/junit_5_quickstart/)
     testImplementation("org.testcontainers:testcontainers:1.18.0")
-    testImplementation("org.testcontainers:junit-jupiter:1.18.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.18.0") //TODO TGIS, can i remove this?
     testImplementation("org.testcontainers:postgresql:1.18.0")
 
 }

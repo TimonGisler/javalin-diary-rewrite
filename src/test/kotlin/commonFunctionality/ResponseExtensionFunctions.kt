@@ -1,4 +1,4 @@
-package helperClasses
+package commonFunctionality
 
 import io.javalin.json.JavalinJackson
 import okhttp3.Response

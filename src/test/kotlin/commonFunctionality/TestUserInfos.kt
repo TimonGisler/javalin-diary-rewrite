@@ -1,4 +1,4 @@
-package helperClasses
+package commonFunctionality
 
 /**
  * A file which contains some magic variables which are used in the tests.

@@ -1,4 +1,4 @@
-package helperClasses
+package commonFunctionality
 
 import okhttp3.Request
 import java.util.*
