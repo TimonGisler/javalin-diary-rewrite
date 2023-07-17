@@ -40,7 +40,7 @@ class DeleteEntryTest {
             //try to delete entry of testuser2 as testuser1
             val response: Response = client.delete("/entries/$entryIdOfUser2", req = ValidAuthenticationHeaderAdderUser1())
             //retrieving entries for testuser1 should only return entries for testuser1 and not for testuser2
-            assertEquals(HttpStatus.FORBIDDEN.code, response.code)
+            assertEquals(HttpStatus.FORBIDDEN.code, response.code, "when testuser tries to delete entry of testuser2, he should get a forbidden response but got ${response.code}")
         }
 
     }
