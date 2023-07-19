@@ -3,6 +3,7 @@ package entries
 import JdbiProvider.getJdbi
 import common.getUserId
 import io.javalin.http.Context
+import io.javalin.json.JavalinGson
 import io.javalin.security.AccessManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,6 +20,7 @@ object GetEntriesOverViewQuery {
         val userId: Long = ctx.getUserId()
         val entries = fetchEntriesOverview(userId)
         ctx.json(entries)
+
     }
 
     private fun fetchEntriesOverview(creatorId:Long): List<EntryQueryResponse> {

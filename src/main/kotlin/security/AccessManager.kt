@@ -27,18 +27,20 @@ class AccessManager: AccessManager {
         when {
             routeRoles.any { it in userRoles } -> handler.handle(ctx) //if the user has one of the roles which are allowed to access this route, handle the request
             //if the user cannot access the route check if he is authenticated and throw the appropriate exception
-            userRoles.contains(Roles.AUTHENTICATED) -> throw ForbiddenResponse("The user does not have the permission to access this resource")
+            userRoles.contains(Roles.AUTHENTICATED) -> throw ForbiddenResponse("User does not have the permission to access this resource")
             else -> throw UnauthorizedResponse("The user is not authenticated")
 
         }
     }
 
+    //TODO TGIS a more oop approach would probably to have an User object which I can fetch from the db and which has a list of roles + id
+    //and then I also can move the whole fetch logic into a repository or smth --> probably not, I want all the acessmanager logic in this class
     private fun getRoleOfUser(ctx: Context): List<Roles>{
         val roles: MutableList<Roles> = mutableListOf()
         val userId: Long = getAuthenticatedUserId(ctx.basicAuthCredentials())
         val entryId: Long? = getEntryIdOrNull(ctx)
 
-        if (true) roles.add(Roles.AUTHENTICATED)
+        if (userId!=null) roles.add(Roles.AUTHENTICATED) //if userId is not null, this means the correct credentials were provided
         if (isUserAuthorOfEntry(userId, entryId)) roles.add(Roles.CREATOR)
         logger.info("user roles are: $roles")
         return roles
