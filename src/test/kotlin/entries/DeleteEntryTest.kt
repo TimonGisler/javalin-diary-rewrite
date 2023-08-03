@@ -9,11 +9,11 @@ import io.javalin.testtools.JavalinTest
 import io.javalin.testtools.TestConfig
 import okhttp3.Response
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import kotlin.test.assertEquals
 
 
 class DeleteEntryTest {
-    //TODO TGIS
 
     @Test
     fun `not logged in user should not be able to delete any entries`(){
@@ -46,10 +46,9 @@ class DeleteEntryTest {
     }
 
     @Test
-    fun `After deleting entry it should no longer appear in overview`(){
+    fun `Entry deletion works`(){
+        //To check this 2 things are checked: 1. it does not appear in the overview anymore 2. it is not fetch-able anymore (with the id)
+        fail("not implemented")
     }
 
-    @Test
-    fun `After deleting entry it should no longer be fetch-able`(){
-    }
 }

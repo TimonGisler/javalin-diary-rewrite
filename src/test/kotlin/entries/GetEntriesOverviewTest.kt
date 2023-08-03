@@ -1,15 +1,12 @@
 package entries
 
-import getJavalinApp
 import commonFunctionality.PostgresContainerBaseTest
 import commonFunctionality.ValidAuthenticationHeaderAdderUser1
 import commonFunctionality.ValidAuthenticationHeaderAdderUser2
 import commonFunctionality.parseBodyToObject
+import getJavalinApp
 import io.javalin.http.HttpStatus
-import io.javalin.json.JavalinJackson
-import io.javalin.json.fromJsonString
 import io.javalin.testtools.JavalinTest
-import okhttp3.Response
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,8 +35,7 @@ class GetEntriesOverviewTest: PostgresContainerBaseTest() {
             client.post("/entries", entryToSaveOfUser1, ValidAuthenticationHeaderAdderUser1())
             client.post("/entries", entryToSaveOfUser2, ValidAuthenticationHeaderAdderUser2())
 
-            //TODO TGIS, kotlin is too stupid to create EntryQueryResponse from the json, it uses a LinkedHashMap instead of EntryQueryResponse...
-            val responseResponse: Response = client.get("/entries", ValidAuthenticationHeaderAdderUser1())
+            client.get("/entries", ValidAuthenticationHeaderAdderUser1())
             val response: Array<EntryQueryResponse> = client.get("/entries", ValidAuthenticationHeaderAdderUser1()).parseBodyToObject()!!
 
             //retrieving entries for testuser1 should only return entries for testuser1 and not for testuser2

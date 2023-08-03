@@ -1,7 +1,9 @@
 package entries
 
+import commonFunctionality.PostgresContainerBaseTest
+import commonFunctionality.ValidAuthenticationHeaderAdderUser1
+import commonFunctionality.testUser1Mail
 import getJavalinApp
-import commonFunctionality.*
 import io.javalin.http.HttpStatus
 import io.javalin.testtools.JavalinTest
 import org.junit.jupiter.api.Test
@@ -35,8 +37,6 @@ class SavingEntryTest: PostgresContainerBaseTest(){
 
             assertEquals(HttpStatus.CREATED.code, response)
         }
-
-
     }
 
     @Test
