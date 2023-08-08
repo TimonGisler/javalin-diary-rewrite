@@ -11,5 +11,6 @@ val logger: Logger = LoggerFactory.getLogger(ValidAuthenticationHeaderAdderUser1
 inline fun <reified T : Any> Response.parseBodyToObject(): T? {
     logger.info("Response.parseBodyToObject() called, parsing body to object of type ${T::class.java}")
     val responseBodyAsString = this.body?.string() ?: return null
+    logger.info("Response body as string: $responseBodyAsString")
     return JavalinJackson().fromJsonString(responseBodyAsString, T::class.java)
 }

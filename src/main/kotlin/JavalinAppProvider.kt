@@ -1,5 +1,7 @@
+
 import entries.DeleteEntryCommand
 import entries.GetEntriesOverViewQuery
+import entries.GetEntryCommand
 import entries.SaveEntryCommand
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
@@ -15,6 +17,7 @@ fun getJavalinApp(): Javalin {
     return Javalin.create { config ->
         config.accessManager(AccessManager())}
         .routes {
+            get("/entries/{entryId}", GetEntryCommand::getEntryCommandHandler, Roles.CREATOR)
             get("/entries", GetEntriesOverViewQuery::getEntriesOverviewHandler, Roles.AUTHENTICATED)
             post("/entries", SaveEntryCommand::saveNewEntryHandler, Roles.EVERYONE) //TODO TGIS, change to only logged in users
             delete("/entries/{entryId}", DeleteEntryCommand::deleteEntryHandler, Roles.CREATOR)

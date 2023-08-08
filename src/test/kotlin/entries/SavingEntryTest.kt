@@ -28,6 +28,7 @@ class SavingEntryTest: PostgresContainerBaseTest(){
 
     @Test
     fun `logged in user can save entry`(){
+        //TODO TGIS, this was moved into the userFunctionality class
         val entryTitle = "title"
         val entryText = "text"
         val entryToSave = CreateEntryCommand(entryTitle, entryText)

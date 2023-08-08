@@ -36,7 +36,7 @@ class GetEntriesOverviewTest: PostgresContainerBaseTest() {
             client.post("/entries", entryToSaveOfUser2, ValidAuthenticationHeaderAdderUser2())
 
             client.get("/entries", ValidAuthenticationHeaderAdderUser1())
-            val response: Array<EntryQueryResponse> = client.get("/entries", ValidAuthenticationHeaderAdderUser1()).parseBodyToObject()!!
+            val response: Array<SingleEntryOverviewEntryQueryResponse> = client.get("/entries", ValidAuthenticationHeaderAdderUser1()).parseBodyToObject()!!
 
             //retrieving entries for testuser1 should only return entries for testuser1 and not for testuser2
             assertEquals(nrOfExpectedResults, response.size)

@@ -17,7 +17,7 @@ object SaveEntryCommand {
         logger.info("SaveEntryCommand.saveNewEntryHandler() called")
         val createEntryData: CreateEntryCommand = ctx.bodyAsClass()
         val idOfSavedEntry: Long = saveNewEntry(createEntryData, ctx.getUserId())
-        ctx.status(HttpStatus.CREATED)
+     ctx.status(HttpStatus.CREATED)
         ctx.json(idOfSavedEntry)
     }
 
