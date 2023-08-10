@@ -2,10 +2,10 @@ package entries
 
 import JdbiProvider.getJdbi
 import io.javalin.http.Context
-import java.time.LocalDate
+import java.time.OffsetDateTime
 
 //return value
-data class GetEntryCommandResponse(val title: String, val creationDate: LocalDate, val id: Long)
+data class GetEntryCommandResponse(val title: String, val creationDate: OffsetDateTime, val id: Long)
 
 object GetEntryCommand {
     fun getEntryCommandHandler(ctx: Context) {

@@ -44,7 +44,23 @@ class ValidAuthenticationHeaderAdderUser2: Consumer<Request.Builder>{
  * Basically it helps simulate the user
  */
 class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request.Builder> = ValidAuthenticationHeaderAdderUser1()) {
-    val logger: Logger = LoggerFactory.getLogger(UserFunctionality::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(UserFunctionality::class.java)
+
+    fun register(): Int {
+        var code: Int? = null
+        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+            code = client.post("/register").code
+        }
+        return code!!
+    }
+
+    fun login(): Int {
+        var code: Int? = null
+        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+            code = client.post("/login", req =  authenticationHeaderAdder).code
+        }
+        return code!!
+    }
 
     /** saves the entry to the database */
     fun saveEntry(entryToSave: CreateEntryCommand): Int {
@@ -87,11 +103,12 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
             } catch (e: Exception) {
                 //TODO TGIS, the reason i have this code is that if for example this entry does not exist anymore i get an error string e.g. "This entry does not exist"
                 //which cannot be parsed to an object because it isn't json the "correct" way would be to probably check the status code and not blindly catch all exceptions
-                logger.info("Exception while parsing response: ${e.message} returning null")
+                logger.info("Exception while parsing response with error message: ${e.message}")
                 null
             }
         }
 
         return response
     }
+
 }

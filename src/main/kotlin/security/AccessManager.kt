@@ -29,7 +29,7 @@ class AccessManager: AccessManager {
         logger.info("checking if user has the required role to access this route")
         when {
             routeRoles.any { it in userRoles } -> handler.handle(ctx) //if the user has one of the roles which are allowed to access this route, handle the request
-            //if the user cannot access the route check if he is authenticated and throw the appropriate exception
+            //if the user cannot access the route check if he is authenticated and throw the appropriate exception --> if he is authenticated but cannot access the resources he lacks the permission
             userRoles.contains(Roles.AUTHENTICATED) -> throw ForbiddenResponse("User does not have the permission to access this resource")
             else -> throw UnauthorizedResponse("The user is not authenticated")
 
