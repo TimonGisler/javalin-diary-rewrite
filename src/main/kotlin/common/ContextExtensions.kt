@@ -19,7 +19,7 @@ fun Context.getUserId(): Long {
         val userName: String = basicAuth.username
         val password: String = basicAuth.password
 
-        it.createQuery("SELECT uniqueid FROM public.user  WHERE email = :email AND password = :password")
+        it.createQuery("SELECT uniqueid FROM public.diaryuser WHERE email = :email AND password = :password")
             .bind("email", userName)
             .bind("password", password)
             .mapTo(Long::class.java)
