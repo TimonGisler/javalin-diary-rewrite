@@ -27,8 +27,8 @@ class GetEntriesOverviewTest: PostgresContainerBaseTest() {
     fun `overview only returns entries of this user`(){
         val entryTitle = "title"
         val entryText = "text"
-        val entryToSaveOfUser1 = CreateEntryCommand(entryTitle, entryText)
-        val entryToSaveOfUser2 = CreateEntryCommand("otherTitel", "otherText")
+        val entryToSaveOfUser1 = SaveEntryCommandData(entryTitle, entryText)
+        val entryToSaveOfUser2 = SaveEntryCommandData("otherTitel", "otherText")
         val nrOfExpectedResults: Int = 1
 
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false))  { _, client ->

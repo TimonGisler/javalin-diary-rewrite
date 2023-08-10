@@ -26,8 +26,8 @@ class DeleteEntryTest: PostgresContainerBaseTest() {
     fun `I am unable to delete other persons entries`() {
         val entryTitle = "title"
         val entryText = "text"
-        val entryToSaveOfUser1 = CreateEntryCommand(entryTitle, entryText)
-        val entryToSaveOfUser2 = CreateEntryCommand("otherTitel", "otherText")
+        val entryToSaveOfUser1 = SaveEntryCommandData(entryTitle, entryText)
+        val entryToSaveOfUser2 = SaveEntryCommandData("otherTitel", "otherText")
         val nrOfExpectedResults: Int = 1
 
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
@@ -56,7 +56,7 @@ class DeleteEntryTest: PostgresContainerBaseTest() {
         val user1: UserFunctionality = UserFunctionality();
 
         //save entry and count how many entries now exist
-        val newEntryId = user1.saveEntry(CreateEntryCommand("title", "text"))
+        val newEntryId = user1.saveEntry(SaveEntryCommandData("title", "text"))
         val noOfEntriesAfterSave: Int = user1.getEntriesOverview().size
 
         //delete entry and count how many entries now exist (should be one less)

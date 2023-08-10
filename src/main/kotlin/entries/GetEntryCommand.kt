@@ -5,7 +5,9 @@ import io.javalin.http.Context
 import java.time.OffsetDateTime
 
 //return value
-data class GetEntryCommandResponse(val title: String, val creationDate: OffsetDateTime, val id: Long)
+data class GetEntryCommandResponse(val title: String, val text: String, val creationDate: OffsetDateTime, val id: Long) {
+
+}
 
 object GetEntryCommand {
     fun getEntryCommandHandler(ctx: Context) {
@@ -17,7 +19,6 @@ object GetEntryCommand {
         return getJdbi().withHandle<GetEntryCommandResponse, Exception> { handle ->
             handle.createQuery("SELECT * FROM entry WHERE id = :id")
                 .bind("id", idOfEntryToGet)
-                .bind("title", "title")
                 .mapTo(GetEntryCommandResponse::class.java)
                 .one()
         }

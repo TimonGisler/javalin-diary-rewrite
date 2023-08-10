@@ -5,10 +5,7 @@ import commonFunctionality.UserFunctionality
 import commonFunctionality.ValidAuthenticationHeaderAdderUser2
 import java.time.Duration
 import java.time.OffsetDateTime
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class GetSpecificEntryTest: PostgresContainerBaseTest(){
 
@@ -17,7 +14,7 @@ class GetSpecificEntryTest: PostgresContainerBaseTest(){
         val user1: UserFunctionality = UserFunctionality()
         val user2: UserFunctionality = UserFunctionality(ValidAuthenticationHeaderAdderUser2())
 
-        val newEntryId = user1.saveEntry(CreateEntryCommand("title", "text"))
+        val newEntryId = user1.saveEntry(SaveEntryCommandData("title", "text"))
 
         val entryOfUser1 = user1.getEntry(newEntryId)
         val entryOfUser1FetchetByUser2 = user2.getEntry(newEntryId)
@@ -29,16 +26,19 @@ class GetSpecificEntryTest: PostgresContainerBaseTest(){
     @Test
     fun `After saving entry I should be able to retrieve it and it should contain correct text and title`() {
         val user1: UserFunctionality = UserFunctionality()
-        val createEntryCommand: CreateEntryCommand = CreateEntryCommand("title", "text")
+        val createEntryCommand: SaveEntryCommandData = SaveEntryCommandData("testtitle", "testtext")
         val entryId: Int = user1.saveEntry(createEntryCommand)
 
-        val entry: GetEntryCommandResponse? = user1.getEntry(entryId)
+        val entry: GetEntryCommandResponse = user1.getEntry(entryId)!!
+
+        assertEquals(createEntryCommand.title, entry.title, "The title of the entry should be the same as the title of the createEntryCommand")
+        assertEquals(createEntryCommand.text, entry.text, "The text of the entry should be the same as the text of the createEntryCommand")
     }
 
     @Test
     fun `Entry should return with correct date`() {
         val user1: UserFunctionality = UserFunctionality()
-        val idOfNewEntry = user1.saveEntry(CreateEntryCommand("title", "text"))
+        val idOfNewEntry = user1.saveEntry(SaveEntryCommandData("title", "text"))
 
         val newEntry = user1.getEntry(idOfNewEntry)
         val durationBetweenDates = Duration.between(newEntry!!.creationDate, OffsetDateTime.now()).toSeconds()

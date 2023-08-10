@@ -16,7 +16,7 @@ class SavingEntryTest: PostgresContainerBaseTest(){
     fun `not logged in user cannot save anything`(){
         val entryTitle = "title"
         val entryText = "text"
-        val entryToSave = CreateEntryCommand(entryTitle, entryText)
+        val entryToSave = SaveEntryCommandData(entryTitle, entryText)
         //start my javalin app (the javalinApp is passed otherwise a new one gets create, but this new one obviously isn't
         //correctly configured e.g. the routes will not be set up)
         JavalinTest.test(getJavalinApp())  { _, client ->
@@ -31,7 +31,7 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         //TODO TGIS, this was moved into the userFunctionality class
         val entryTitle = "title"
         val entryText = "text"
-        val entryToSave = CreateEntryCommand(entryTitle, entryText)
+        val entryToSave = SaveEntryCommandData(entryTitle, entryText)
 
         JavalinTest.test(getJavalinApp()) { _, client ->
             val response: Int = client.post("/entries", entryToSave, ValidAuthenticationHeaderAdderUser1()).code

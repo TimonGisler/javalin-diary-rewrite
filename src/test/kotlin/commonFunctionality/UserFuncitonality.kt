@@ -1,9 +1,10 @@
 package commonFunctionality
 
 import User.RegisterCommandData
-import entries.CreateEntryCommand
 import entries.GetEntryCommandResponse
+import entries.SaveEntryCommandData
 import entries.SingleEntryOverviewEntryQueryResponse
+import entries.UpdateEntryCommandData
 import getJavalinApp
 import io.javalin.testtools.JavalinTest
 import io.javalin.testtools.TestConfig
@@ -73,7 +74,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     }
 
     /** saves the entry to the database */
-    fun saveEntry(entryToSave: CreateEntryCommand): Int {
+    fun saveEntry(entryToSave: SaveEntryCommandData): Int {
         var newEntryId: Int? = null
 
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
@@ -121,4 +122,13 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
         return response
     }
 
+    fun updateEntry(updateEntryCommandData: UpdateEntryCommandData, idOfEntryToUpdate: Long): Int {
+        var code: Int? = null
+
+        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+            code = client.put("/entries/${idOfEntryToUpdate}", updateEntryCommandData, req = authenticationHeaderAdder).code
+        }
+
+        return code!!
+    }
 }
