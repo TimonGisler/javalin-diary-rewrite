@@ -7,6 +7,7 @@ import getJavalinApp
 import io.javalin.testtools.JavalinTest
 import io.javalin.testtools.TestConfig
 import okhttp3.Request
+import okhttp3.Response
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -43,13 +44,15 @@ class ValidAuthenticationHeaderAdderUser2: Consumer<Request.Builder>{
  * Basically it helps simulate the user
  */
 class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request.Builder> = ValidAuthenticationHeaderAdderUser1()) {
+    val logger: Logger = LoggerFactory.getLogger(UserFunctionality::class.java)
 
     /** saves the entry to the database */
     fun saveEntry(entryToSave: CreateEntryCommand): Int {
         var newEntryId: Int? = null
 
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
-             newEntryId = client.post("/entries", entryToSave, authenticationHeaderAdder).parseBodyToObject()!!
+             val response: Response = client.post("/entries", entryToSave, authenticationHeaderAdder)
+            newEntryId = response.parseBodyToObject()
         }
 
         return newEntryId!!
@@ -57,7 +60,6 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
 
     fun getEntriesOverview(): Array<SingleEntryOverviewEntryQueryResponse> {
         var response: Array<SingleEntryOverviewEntryQueryResponse>? = null
-
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
             response = client.get("/entries", authenticationHeaderAdder).parseBodyToObject()!!
         }
@@ -65,18 +67,29 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
         return response!!
     }
 
-    fun deleteEntry(newEntryId: Int) {
+    fun deleteEntry(entryToDelete: Int) {
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
-            client.delete("/entries/$newEntryId", authenticationHeaderAdder)
+            client.delete("/entries/$entryToDelete", req = authenticationHeaderAdder)
         }
     }
 
+    /**
+     * Get the entry or return null if the entry could not be fetched
+     */
     fun getEntry(idOfEntryToGet: Int): GetEntryCommandResponse? {
         var response: GetEntryCommandResponse? = null
 
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
             val rawResponse = client.get("/entries/$idOfEntryToGet", authenticationHeaderAdder)
-            response = rawResponse.parseBodyToObject()
+
+            response = try {
+                rawResponse.parseBodyToObject()
+            } catch (e: Exception) {
+                //TODO TGIS, the reason i have this code is that if for example this entry does not exist anymore i get an error string e.g. "This entry does not exist"
+                //which cannot be parsed to an object because it isn't json the "correct" way would be to probably check the status code and not blindly catch all exceptions
+                logger.info("Exception while parsing response: ${e.message} returning null")
+                null
+            }
         }
 
         return response

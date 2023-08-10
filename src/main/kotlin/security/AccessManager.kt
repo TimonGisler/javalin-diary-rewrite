@@ -1,7 +1,10 @@
 package security
 
 import JdbiProvider.getJdbi
-import io.javalin.http.*
+import io.javalin.http.Context
+import io.javalin.http.ForbiddenResponse
+import io.javalin.http.Handler
+import io.javalin.http.UnauthorizedResponse
 import io.javalin.security.AccessManager
 import io.javalin.security.BasicAuthCredentials
 import io.javalin.security.RouteRole
@@ -38,10 +41,15 @@ class AccessManager: AccessManager {
     private fun getRoleOfUser(ctx: Context): List<Roles>{
         val roles: MutableList<Roles> = mutableListOf()
         val userId: Long = getAuthenticatedUserId(ctx.basicAuthCredentials())
-        val entryId: Long? = getEntryIdOrNull(ctx)
+        val entryId: Long? = getEntryId(ctx)
 
         if (userId!=null) roles.add(Roles.AUTHENTICATED) //if userId is not null, this means the correct credentials were provided
-        if (isUserAuthorOfEntry(userId, entryId)) roles.add(Roles.CREATOR)
+
+        //if the user wants to do something with an specific entry check if he is the creator of the entry
+        entryId?.let {
+            if (isUserAuthorOfEntry(userId, entryId)) roles.add(Roles.CREATOR)
+        }
+
         logger.info("user roles are: $roles")
         return roles
     }
@@ -72,13 +80,13 @@ class AccessManager: AccessManager {
     }
 
 
-    private fun getEntryIdOrNull(ctx: Context) = try {
+    private fun getEntryId(ctx: Context) = try {
         ctx.pathParam("entryId").toLong()
     } catch (e: Exception) {
         null
     }
 
-    private fun isUserAuthorOfEntry(creatorId: Long, entryId: Long?): Boolean =
+    private fun isUserAuthorOfEntry(creatorId: Long, entryId: Long): Boolean =
         getJdbi().withHandle<Boolean, Exception> { handle ->
             handle.createQuery("SELECT EXISTS(SELECT * from public.entry where creatorId = :creatorId AND id = :entryId)")
                 .bind("creatorId", creatorId)

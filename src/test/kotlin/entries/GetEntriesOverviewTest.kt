@@ -7,6 +7,7 @@ import commonFunctionality.parseBodyToObject
 import getJavalinApp
 import io.javalin.http.HttpStatus
 import io.javalin.testtools.JavalinTest
+import io.javalin.testtools.TestConfig
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -30,7 +31,7 @@ class GetEntriesOverviewTest: PostgresContainerBaseTest() {
         val entryToSaveOfUser2 = CreateEntryCommand("otherTitel", "otherText")
         val nrOfExpectedResults: Int = 1
 
-        JavalinTest.test(getJavalinApp())  { _, client ->
+        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false))  { _, client ->
             //save entries for testuser1 and 2
             client.post("/entries", entryToSaveOfUser1, ValidAuthenticationHeaderAdderUser1())
             client.post("/entries", entryToSaveOfUser2, ValidAuthenticationHeaderAdderUser2())
