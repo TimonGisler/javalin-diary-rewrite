@@ -11,7 +11,7 @@ import java.time.OffsetDateTime
 // return value
 data class SingleEntryOverviewEntryQueryResponse(val title: String, val creationDate: OffsetDateTime, val id: Long)
 
-object GetEntriesOverViewQuery {
+object GetEntriesOverViewQuery { //TODO TGIS currently i am returning a list of single entries. Change that and then test if the leakage problem still exists. --> test class "reproduceLeakingProblem"
     private val logger: Logger = LoggerFactory.getLogger(AccessManager::class.java)
 
     fun getEntriesOverviewHandler(ctx: Context){
