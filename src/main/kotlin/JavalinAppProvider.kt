@@ -1,4 +1,5 @@
 
+import User.RegisterCommand
 import entries.DeleteEntryCommand
 import entries.GetEntriesOverViewQuery
 import entries.GetEntryCommand
@@ -17,6 +18,7 @@ fun getJavalinApp(): Javalin {
     return Javalin.create { config ->
         config.accessManager(AccessManager())}
         .routes {
+            post("/register", RegisterCommand::registerUserHandler, Roles.EVERYONE)
             post("/login", { ctx -> ctx.json("login successful") }, Roles.AUTHENTICATED) //if he authenticated sucessfully return "login succesful"
             get("/entries/{entryId}", GetEntryCommand::getEntryCommandHandler, Roles.CREATOR)
             get("/entries", GetEntriesOverViewQuery::getEntriesOverviewHandler, Roles.AUTHENTICATED)

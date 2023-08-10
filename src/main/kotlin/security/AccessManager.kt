@@ -66,7 +66,7 @@ class AccessManager: AccessManager {
         val password = basicAuth.password
 
         val userId = getJdbi().withHandle<Long, Exception> { handle ->
-            handle.createQuery("SELECT uniqueid FROM public.user  WHERE email = :email AND password = :password")
+            handle.createQuery("SELECT uniqueid FROM public.diaryUser  WHERE email = :email AND password = :password")
                 .bind("email", email)
                 .bind("password", password)
                 .mapTo(Long::class.java)

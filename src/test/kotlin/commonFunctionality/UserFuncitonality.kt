@@ -1,5 +1,6 @@
 package commonFunctionality
 
+import User.RegisterCommandData
 import entries.CreateEntryCommand
 import entries.GetEntryCommandResponse
 import entries.SingleEntryOverviewEntryQueryResponse
@@ -16,8 +17,8 @@ import java.util.function.Consumer
 
 /**
  * Can be passed to the JavalinTest.test() method to add the authentication header to the request.
- * TODO TGIS, these two classes can be combined into one and either pass the mail and pw or the encoded credentials directly
  */
+//TODO TGIS, make them use the CustomValidAuthenticationHeaderAdderUser internally
 class ValidAuthenticationHeaderAdderUser1: Consumer<Request.Builder>{
     private val logger: Logger = LoggerFactory.getLogger(ValidAuthenticationHeaderAdderUser1::class.java)
     private val encodedCredentials: String = Base64.getEncoder().encodeToString("$testUser1Mail:$testUser1Password".toByteArray())
@@ -36,6 +37,15 @@ class ValidAuthenticationHeaderAdderUser2: Consumer<Request.Builder>{
         builder.header("Authorization", "Basic $encodedCredentials")
     }
 }
+class CustomValidAuthenticationHeaderAdderUser (private val mail: String, private val password: String): Consumer<Request.Builder> {
+    private val logger: Logger = LoggerFactory.getLogger(ValidAuthenticationHeaderAdderUser1::class.java)
+    private val encodedCredentials: String = Base64.getEncoder().encodeToString("$mail:$password".toByteArray())
+
+    override fun accept(builder: Request.Builder) {
+        logger.info("ValidAuthenticationHeaderAdderUser1.accept() called")
+        builder.header("Authorization", "Basic $encodedCredentials")
+    }
+}
 
 
 /**
@@ -46,18 +56,18 @@ class ValidAuthenticationHeaderAdderUser2: Consumer<Request.Builder>{
 class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request.Builder> = ValidAuthenticationHeaderAdderUser1()) {
     private val logger: Logger = LoggerFactory.getLogger(UserFunctionality::class.java)
 
-    fun register(): Int {
+    fun register(registerCommandData: RegisterCommandData): Int {
         var code: Int? = null
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
-            code = client.post("/register").code
+            code = client.post("/register", registerCommandData).code
         }
         return code!!
     }
 
-    fun login(): Int {
+    fun login(customAuthenticationHeaderAdder: Consumer<Request.Builder> = authenticationHeaderAdder): Int {
         var code: Int? = null
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
-            code = client.post("/login", req =  authenticationHeaderAdder).code
+            code = client.post("/login", req =  customAuthenticationHeaderAdder).code
         }
         return code!!
     }
