@@ -1,9 +1,6 @@
 package entries
 
-import commonFunctionality.UserFunctionality
-import commonFunctionality.ValidAuthenticationHeaderAdderUser1
-import commonFunctionality.ValidAuthenticationHeaderAdderUser2
-import commonFunctionality.parseBodyToObject
+import commonFunctionality.*
 import getJavalinApp
 import io.javalin.http.HttpStatus
 import io.javalin.testtools.JavalinTest
@@ -14,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 
-class DeleteEntryTest {
+class DeleteEntryTest: PostgresContainerBaseTest() {
 
     @Test
     fun `not logged in user should not be able to delete any entries`() {

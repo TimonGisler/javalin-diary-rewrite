@@ -1,10 +1,11 @@
 package entries
 
+import commonFunctionality.PostgresContainerBaseTest
 import commonFunctionality.UserFunctionality
 import kotlin.test.Test
 
 
-class reproduceLeakingProblem {
+class reproduceLeakingProblem: PostgresContainerBaseTest() { //extending PostgresContainerBaseTest fixes the problem somehow..
 
     @Test
     fun `A connection was leaked`() {
