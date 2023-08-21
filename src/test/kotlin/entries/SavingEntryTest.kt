@@ -20,7 +20,7 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         //start my javalin app (the javalinApp is passed otherwise a new one gets create, but this new one obviously isn't
         //correctly configured e.g. the routes will not be set up)
         JavalinTest.test(getJavalinApp())  { _, client ->
-            val response = client.post("/entries", entryToSave).code
+            val response = client.post("/api/entries", entryToSave).code
 
             assertEquals(HttpStatus.UNAUTHORIZED.code, response)
         }
@@ -28,13 +28,12 @@ class SavingEntryTest: PostgresContainerBaseTest(){
 
     @Test
     fun `logged in user can save entry`(){
-        //TODO TGIS, this was moved into the userFunctionality class
         val entryTitle = "title"
         val entryText = "text"
         val entryToSave = SaveEntryCommandData(entryTitle, entryText)
 
         JavalinTest.test(getJavalinApp()) { _, client ->
-            val response: Int = client.post("/entries", entryToSave, ValidAuthenticationHeaderAdderUser1()).code
+            val response: Int = client.post("/api/entries", entryToSave, ValidAuthenticationHeaderAdderUser1()).code
 
             assertEquals(HttpStatus.CREATED.code, response)
         }
@@ -45,7 +44,7 @@ class SavingEntryTest: PostgresContainerBaseTest(){
         val encodedCredentials: String = Base64.getEncoder().encodeToString("$testUser1Mail:thisPwDoesNotExist".toByteArray())
 
         JavalinTest.test(getJavalinApp())  { _, client ->
-            val response = client.get("/entries") {
+            val response = client.get("/api/entries") {
                 it.header("Authorization", "Basic $encodedCredentials")
             }.code
 

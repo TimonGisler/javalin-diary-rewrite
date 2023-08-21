@@ -70,7 +70,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     fun register(registerCommandData: RegisterCommandData): Int {
         var code: Int? = null
         JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
-            code = client.post("/register", registerCommandData).code
+            code = client.post("/api/register", registerCommandData).code
         }
         return code!!
     }
@@ -78,7 +78,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     fun login(customAuthenticationHeaderAdder: Consumer<Request.Builder> = authenticationHeaderAdder): Int {
         var code: Int? = null
         JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
-            code = client.post("/login", req =  customAuthenticationHeaderAdder).code
+            code = client.post("/api/login", req =  customAuthenticationHeaderAdder).code
         }
         return code!!
     }
@@ -88,7 +88,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
         var newEntryId: Int? = null
 
         JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false, okHttpClient = noTimeOutOkHttpClient)) { _, client ->
-             val response: Response = client.post("/entries", entryToSave, authenticationHeaderAdder)
+             val response: Response = client.post("/api/entries", entryToSave, authenticationHeaderAdder)
             newEntryId = response.parseBodyToObject()
         }
 
@@ -98,16 +98,19 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     fun getEntriesOverview(): Array<SingleEntryOverviewEntryQueryResponse> {
         var response: Array<SingleEntryOverviewEntryQueryResponse>? = null
         JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
-            response = client.get("/entries", authenticationHeaderAdder).parseBodyToObject()!!
+            response = client.get("/api/entries", authenticationHeaderAdder).parseBodyToObject()!!
         }
 
         return response!!
     }
 
-    fun deleteEntry(entryToDelete: Int) {
+    fun deleteEntry(entryToDelete: Int): Response {
+        var response: Response? = null
         JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
-            client.delete("/entries/$entryToDelete", req = authenticationHeaderAdder)
+            response = client.delete("/api/entries/$entryToDelete", req = authenticationHeaderAdder)
         }
+
+        return response!!
     }
 
     /**
@@ -117,7 +120,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
         var response: GetEntryCommandResponse? = null
 
         JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
-            val rawResponse = client.get("/entries/$idOfEntryToGet", authenticationHeaderAdder)
+            val rawResponse = client.get("/api/entries/$idOfEntryToGet", authenticationHeaderAdder)
 
             response = try {
                 rawResponse.parseBodyToObject()
@@ -136,7 +139,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
         var code: Int? = null
 
         JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
-            code = client.put("/entries/${idOfEntryToUpdate}", updateEntryCommandData, req = authenticationHeaderAdder).code
+            code = client.put("/api/entries/${idOfEntryToUpdate}", updateEntryCommandData, req = authenticationHeaderAdder).code
         }
 
         return code!!
