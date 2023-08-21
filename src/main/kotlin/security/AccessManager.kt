@@ -83,6 +83,7 @@ class AccessManager: AccessManager {
     private fun getEntryId(ctx: Context) = try {
         ctx.pathParam("entryId").toLong()
     } catch (e: Exception) {
+        logger.info("No entryId provided in path ${ctx.path()}")
         null
     }
 

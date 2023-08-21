@@ -8,10 +8,12 @@ import entries.UpdateEntryCommandData
 import getJavalinApp
 import io.javalin.testtools.JavalinTest
 import io.javalin.testtools.TestConfig
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.Duration
 import java.util.*
 import java.util.function.Consumer
 
@@ -56,10 +58,18 @@ class CustomValidAuthenticationHeaderAdderUser (private val mail: String, privat
  */
 class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request.Builder> = ValidAuthenticationHeaderAdderUser1()) {
     private val logger: Logger = LoggerFactory.getLogger(UserFunctionality::class.java)
+    private val noTimeOutOkHttpClient = OkHttpClient().newBuilder()
+        .connectTimeout(Duration.ZERO)
+        .readTimeout(Duration.ZERO)
+        .writeTimeout(Duration.ZERO)
+        .build()
+
+    // by default prints all the errors (does not capture them) and by default has no timeout --> helps for debugging
+    private val defaultTestConfig = TestConfig(captureLogs = false, okHttpClient = noTimeOutOkHttpClient)
 
     fun register(registerCommandData: RegisterCommandData): Int {
         var code: Int? = null
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
             code = client.post("/register", registerCommandData).code
         }
         return code!!
@@ -67,7 +77,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
 
     fun login(customAuthenticationHeaderAdder: Consumer<Request.Builder> = authenticationHeaderAdder): Int {
         var code: Int? = null
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
             code = client.post("/login", req =  customAuthenticationHeaderAdder).code
         }
         return code!!
@@ -77,7 +87,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     fun saveEntry(entryToSave: SaveEntryCommandData): Int {
         var newEntryId: Int? = null
 
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false, okHttpClient = noTimeOutOkHttpClient)) { _, client ->
              val response: Response = client.post("/entries", entryToSave, authenticationHeaderAdder)
             newEntryId = response.parseBodyToObject()
         }
@@ -87,7 +97,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
 
     fun getEntriesOverview(): Array<SingleEntryOverviewEntryQueryResponse> {
         var response: Array<SingleEntryOverviewEntryQueryResponse>? = null
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
             response = client.get("/entries", authenticationHeaderAdder).parseBodyToObject()!!
         }
 
@@ -95,7 +105,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     }
 
     fun deleteEntry(entryToDelete: Int) {
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
             client.delete("/entries/$entryToDelete", req = authenticationHeaderAdder)
         }
     }
@@ -106,7 +116,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     fun getEntry(idOfEntryToGet: Int): GetEntryCommandResponse? {
         var response: GetEntryCommandResponse? = null
 
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
             val rawResponse = client.get("/entries/$idOfEntryToGet", authenticationHeaderAdder)
 
             response = try {
@@ -125,7 +135,7 @@ class UserFunctionality (private val authenticationHeaderAdder: Consumer<Request
     fun updateEntry(updateEntryCommandData: UpdateEntryCommandData, idOfEntryToUpdate: Long): Int {
         var code: Int? = null
 
-        JavalinTest.test(getJavalinApp(), TestConfig(captureLogs = false)) { _, client ->
+        JavalinTest.test(getJavalinApp(), defaultTestConfig) { _, client ->
             code = client.put("/entries/${idOfEntryToUpdate}", updateEntryCommandData, req = authenticationHeaderAdder).code
         }
 
